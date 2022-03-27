@@ -1,0 +1,8 @@
+
+
+command=some_command
+
+
+[program:some_name]
+command=some_command
+

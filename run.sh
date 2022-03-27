@@ -35,6 +35,11 @@ if [[ $RUN_FLOWER == "true" ]]; then
     sections="${sections}${section}";
 fi
 
+if [ -z "$sections" ]; then
+    echo "Nothing to run.";
+    exit 0
+fi
+
 echo "Additional supervisord.conf sections: $sections";
 
 echo $sections >> $supervisord_conf;

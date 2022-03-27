@@ -69,6 +69,4 @@ RUN chmod +x /etc/supervisor/conf.d/init.sh
 
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
 
-EXPOSE 5555 80
-
 CMD /etc/supervisor/conf.d/run.sh

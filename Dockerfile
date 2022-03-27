@@ -27,6 +27,7 @@ RUN curl -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ub
     && apt-get update && apt-get install -y --no-install-recommends \
         dotnet-runtime-2.1 \
         fuse \
+        gettext-base \
         less \
         locales \
         nginx \

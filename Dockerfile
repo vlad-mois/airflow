@@ -13,7 +13,6 @@ ARG AIRFLOW_USER_HOME=/usr/local/airflow
 
 ENV AIRFLOW_USER_HOME_DIR=${AIRFLOW_USER_HOME}
 ENV AIRFLOW_HOME=${AIRFLOW_USER_HOME}
-ENV AUTH_ROLE_PUBLIC=Admin
 
 ENV LANGUAGE=en_US.UTF-8 \
     LANG=en_US.UTF-8 \
@@ -60,8 +59,21 @@ RUN pip install --no-cache-dir \
     ipython \
     toloka-kit
 
+# RUN pip install --no-cache-dir \
+#     torch==1.7.1 \
+#     pytorch-lightning==1.5.10 \
+#     transformers==4.17.0 \
+#     mlflow==1.24.0
+
+RUN echo "root:Docker!" | chpasswd
+COPY sshd_config /etc/ssh/
+RUN mkdir -p /tmp
+COPY ssh_setup.sh /tmp
+RUN chmod +x /tmp/ssh_setup.sh \
+    && (sleep 1;/tmp/ssh_setup.sh 2>&1 > /dev/null)
+
 COPY ./nginx.conf /etc/nginx/nginx.conf
-COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./supervisord.conf /etc/supervisor/conf.d/conf.src.bak
 
 COPY ./run.sh /etc/supervisor/conf.d/run.sh
 RUN chmod +x /etc/supervisor/conf.d/run.sh
@@ -69,6 +81,10 @@ RUN chmod +x /etc/supervisor/conf.d/run.sh
 COPY ./init.sh /etc/supervisor/conf.d/init.sh
 RUN chmod +x /etc/supervisor/conf.d/init.sh
 
+COPY ./webserver_config.py ${AIRFLOW_USER_HOME}/webserver_config.py
+
 RUN chown -R airflow: ${AIRFLOW_USER_HOME}
+
+EXPOSE 80 2222
 
 CMD /etc/supervisor/conf.d/run.sh

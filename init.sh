@@ -20,6 +20,11 @@ AIRFLOW_COMMAND="${1:-}"
 
 set -euo pipefail
 
+export _AIRFLOW_DB_UPGRADE=true  # === Changed ===
+export _AIRFLOW_WWW_USER_CREATE=true  # === Changed ===
+export _AIRFLOW_WWW_USER_USERNAME=airflow  # === Changed ===
+export _AIRFLOW_WWW_USER_PASSWORD=airflow  # === Changed ===
+
 function run_check_with_retries {
     local cmd
     cmd="${1}"

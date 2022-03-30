@@ -8,6 +8,21 @@ supervisord_conf_dst="/etc/supervisor/conf.d/supervisord.conf";
 
 cp $supervisord_conf_src $supervisord_conf_intermediate;
 
+function try_initialize() {
+    init_flag_path=/initialized.flag;
+    echo "Checking for initialization..."
+    if [ -f $init_flag_path ] && egrep -q "1|true|yes" $init_flag_path
+    then
+        echo "Already initialized";
+    else
+        echo "Run initialization...";
+        /etc/supervisor/conf.d/init.sh airflow version;
+        echo "1" > $init_flag_path;
+        sleep 10s;
+        echo "Initialization done.";
+    fi
+}
+
 function add_section() {
     local name="${1}"
     local command="${2}"
@@ -17,10 +32,16 @@ function add_section() {
     echo "command=$command" >> $supervisord_conf_intermediate;
 }
 
-if [[ $RUN_INIT == "true" ]]; then
-    echo "Start initiating..."
+if [[ $FORCE_INIT_ONLY == "true" ]]; then
+    echo FORCE_INIT_ONLY=$FORCE_INIT_ONLY;
+    echo "Force run initialization...";
     /etc/supervisor/conf.d/init.sh airflow version;
     exit 0;
+fi
+
+if [[ $RUN_INIT == "true" ]]; then
+    echo RUN_INIT=$RUN_INIT;
+    try_initialize;
 fi
 
 if [[ $RUN_WEBSERVER == "true" ]]; then

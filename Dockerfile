@@ -59,11 +59,11 @@ RUN pip install --no-cache-dir \
     ipython \
     toloka-kit
 
-# RUN pip install --no-cache-dir \
-#     torch==1.7.1 \
-#     pytorch-lightning==1.5.10 \
-#     transformers==4.17.0 \
-#     mlflow==1.24.0
+RUN pip install --no-cache-dir \
+    torch==1.7.1 \
+    pytorch-lightning==1.5.10 \
+    transformers==4.17.0 \
+    mlflow==1.24.0
 
 RUN echo "root:Docker!" | chpasswd
 COPY sshd_config /etc/ssh/

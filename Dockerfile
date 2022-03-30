@@ -1,4 +1,4 @@
-# docker build . -t vladmois/airflow-common:latest && docker push vladmois/airflow-common:latest
+# docker build . -t vladmois/airflow-common:latest -t vladmois/airflow-common:$(date '+%Y-%m-%d-%H-%M-%S') && docker push vladmois/airflow-common --all-tags
 
 FROM python:3.9
 
@@ -55,6 +55,8 @@ RUN pip install --no-cache-dir azure-cli \
 
 RUN pip install --no-cache-dir \
     apache-airflow$AIRFLOW_EXTRAS==$AIRFLOW_VERSION \
+    azure-storage-blob \
+    azure-storage-file-share \
     crowd-kit \
     ipython \
     toloka-kit
